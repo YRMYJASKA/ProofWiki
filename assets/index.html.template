@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <title>Proof Wiki</title>
+ </head>
+ <body>
+   {% for entry, pretty, isdir in files %}
+   <table>
+     <tr>
+       {% if isdir %}
+       <a href="./{{entry}}/index.html">{{pretty}}</a>
+       {% else %}
+       <a href="./{{entry}}">{{pretty}}</a>
+       {% endif %}
+     </tr>
+   </table>
+   {% endfor %}
+ </body>
+</html>

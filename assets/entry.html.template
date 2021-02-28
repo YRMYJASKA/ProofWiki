@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  $for(author-meta)$
+  <meta name="author" content="$author-meta$" />
+  $endfor$
+  $if(date-meta)$
+  <meta name="date" content="$date-meta$" />
+  $endif$
+  $if(keywords)$
+  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+  $endif$
+  $if(math)$
+  $math$
+  $endif$
+  <title></title>
+  </head>
+  <body>
+  $if(title)$
+  <div id="$idprefix$header">
+  <h1 class="title">$title$</h1>
+  $endif$
+
+  $body$
+  </body>
+</html>
