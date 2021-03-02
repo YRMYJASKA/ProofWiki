@@ -2,18 +2,42 @@
 <html>
  <head>
    <title>Proof Wiki</title>
+   <style type="text/css" media="screen">
+     a {
+         text-decoration: none;
+         color: maroon;
+     }
+     h1, h2, h3 {
+         color: maroon;
+     }
+   </style>
  </head>
  <body>
+   <a href="../index.html">
+   <div id="back-div">back</div>
+   </a>
+   <div id="listing-div" style="width:800px; margin:0 auto; padding-top:100px;">
+    <h1>Listing: </h1>
    {% for entry, pretty, isdir in files %}
    <table>
      <tr>
+       <td>
+         {% if isdir %}
+         &#128449;
+         {% else %}
+         □
+         {% endif %}
+       </td>
+       <td>
        {% if isdir %}
        <a href="./{{entry}}/index.html">{{pretty}}</a>
        {% else %}
        <a href="./{{entry}}">{{pretty}}</a>
        {% endif %}
+       </td>
      </tr>
    </table>
    {% endfor %}
+  </div>
  </body>
 </html>

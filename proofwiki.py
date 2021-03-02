@@ -25,7 +25,6 @@ def proofwiki_main(args):
         # Initialise the git repository in the specified entries directory
         logging.info("Initialising a Git repository in the specified directory")
         repo = git.Repo.init(args.entries_dir)
-
     elif args.action == "build":
         # Check for changes in the entries directory
         logging.info("Checking for changes")
@@ -40,12 +39,11 @@ def proofwiki_main(args):
 
         # Check for any directories that are new and also add all the files if --refresh
         all_directories = []
+        all_entries = set()
         for root, dirs, files in os.walk(args.entries_dir):
-            dirs[:] = [d for d in dirs if d != ".git"]
+            dirs[:] = [d for d in dirs if d[0] != '.']
             all_directories += [root + "/" + x for x in dirs]
-            if args.refresh:
-                # Add all the files to the new_entries set
-                new_entries |= set([f"{root}/{x}" for x in files])
+            all_entries |= set([f"{root}/{x}" for x in files])
 
         # Go through the directories and create them in the wiki directory if not there
         for d in all_directories:
@@ -57,15 +55,26 @@ def proofwiki_main(args):
         # Fill in the wiki with the new and changed files
         logging.info("Generating new entries...")
         prettynames = {}
-        for entry in new_entries:
+
+        # Refresh all entries?
+        if args.refresh:
+            iterable_entries = all_entries
+        else:
+            iterable_entries = new_entries
+
+        for entry in iterable_entries:
             outfile = args.wiki_dir + os.path.splitext(entry)[0][len(args.entries_dir):] + ".html"
             logging.info(f"Converting {entry} -> {outfile}")
             output = pp.convert_file(entry, 'html', outputfile=outfile, extra_args=['--mathjax',
                                                                                     '--template', args.template_file])
+        # Create the pretty names
+        for entry in all_entries:
+            outfile = args.wiki_dir + os.path.splitext(entry)[0][len(args.entries_dir):] + ".html"
             if args.disable_prettylisting:
                 prettynames[outfile] = entry
             else:
                 prettynames[outfile] = pp.convert_file(entry, 'html', extra_args=["--template", "./assets/title_extractor.pandoc"])
+
 
         # Delete any deleted entries
         if len(deleted_entries) > 0:
@@ -101,6 +110,13 @@ def proofwiki_main(args):
 
         # Finally, commit these files into the git repository
         logging.info("Implementing changes to the Git repository...")
+
+        if len(new_entries) < 1:
+            # No need to commit if no changes
+            return
+
+        repo.index.add([x[len(args.entries_dir)+1:] for x in new_entries])
+        repo.index.commit(f"Added/modified entries {[x[len(args.entries_dir)+1:] for x in new_entries]}")
 
 
 if __name__=="__main__":

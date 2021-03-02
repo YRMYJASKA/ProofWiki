@@ -13,14 +13,30 @@
   $if(math)$
   $math$
   $endif$
-  <title></title>
+  <style type="text/css" media="screen">
+     h1, h2, h3 {
+         color: maroon;
+     }
+     a {
+         color: maroon;
+         text-decoration: none;
+     }
+  </style>
+
+  <title>$title$ -- Proof Wiki</title>
   </head>
   <body>
-  $if(title)$
-  <div id="$idprefix$header">
-  <h1 class="title">$title$</h1>
-  $endif$
+    <a href="./index.html">
+      <div id="back-div">back</div>
+    </a>
+    <div id="content" style="width:800px; margin:0 auto; padding-top:100px;">
+      $if(title)$
+      <div id="$idprefix$header">
+      <h1 class="title">$title$</h1>
+      $endif$
+      <hr>
 
-  $body$
+    $body$
+    </div>
   </body>
 </html>
